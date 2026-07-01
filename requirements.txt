@@ -1,0 +1,5 @@
+groq
+python-dotenv
+duckduckgo-search
+requests
+beautifulsoup4
