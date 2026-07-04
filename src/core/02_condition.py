@@ -30,7 +30,7 @@ def main():
         messages=[
             {
                 "role": "system",
-                "content": "You are a strict critic. You must respond in valid JSON only. No extra text."
+                "content": "You are an expert evaluator. You must respond in valid JSON only. No extra text."
             },
             {
                 "role": "user",
