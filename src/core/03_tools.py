@@ -1,11 +1,11 @@
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", '..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", '..'))
 
 from src.utils.ai import llm
 from src.tools import search_web, llm_judge, add_todos, print_status
 
-GOAL = "I want to but a hoodi with a fur lined hood. It needs to be full zipper. Near Taj Hotal in Mumbai. Where can I buy one today at 12 PM?"
+GOAL = "I want to but a hoodie with a fur lined hood. It needs to be full zipper. Near Taj Hotal in Mumbai. Where can I buy one today at 12 PM?"
 
 def main():
     print("\n" + "-" * 40)
@@ -18,18 +18,17 @@ def main():
     },
     {
         "role": "user",
-        "content": f"Do you need to search the wen to answer this accurately?\n\nQuestion: {GOAL}"
+        "content": f"Do you need to search the web to answer this accurately?\n\nQuestion: {GOAL}"
     }
     ])
 
     print(f"\n🤔 Search needed: {search_decision}")
 
-    content = ""
+    context = ""
     if "YES" in search_decision.upper():
-        search_results = search_web(GOAL)
+        context = search_web(GOAL)
         print("\n📄 Search Results:")
-        print(search_results)
-        context = search_results
+        print(context)
 
     messages = [
         {
@@ -38,7 +37,7 @@ def main():
         },
         {
             "role": "user",
-            "content": f"Context:\n\nQuestion: {GOAL}" if context else GOAL
+            "content": f"Context:\n{context}\n\nQuestion: {GOAL}" if context else GOAL
         }
     ]
 
@@ -52,7 +51,7 @@ def main():
     if not result["done"] and "feedback" in result:
         print("\n Adding feedback as todos...")
         add_todos(result["feedback"])
-        print_status
+        print_status()
     else:
         print("\nGoal fully completed!")
 
