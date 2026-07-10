@@ -3,7 +3,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", '..'))
 
 from src.utils.ai import llm
-from src.tools import search_web, llm_judge, add_todos, print_status
+from src.tools import search_web, llm_judge
 
 GOAL = "I want to but a hoodie with a fur lined hood. It needs to be full zipper. Near Taj Hotal in Mumbai. Where can I buy one today at 12 PM?"
 
@@ -49,9 +49,7 @@ def main():
     result = llm_judge(GOAL, answer)
 
     if not result["done"] and "feedback" in result:
-        print("\n Adding feedback as todos...")
-        add_todos(result["feedback"])
-        print_status()
+        print(f"\nFeedback\n{result['feedback']}")
     else:
         print("\nGoal fully completed!")
 
