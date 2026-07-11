@@ -1,5 +1,5 @@
 groq
 python-dotenv
-duckduckgo-search
+ddgs
 requests
 beautifulsoup4
