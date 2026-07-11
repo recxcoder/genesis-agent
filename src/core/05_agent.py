@@ -15,7 +15,7 @@ GOAL = input("Enter prompt: ")
 SYSTEM_PROMPT = f"""
 You are a helpful assistant working for a busy executive.
 Your tone is friendly but direct, they prefer short clear and direct writing.
-You try to accoplish the specific task you are given.
+You try to accomplish the specific task you are given.
 You can use any of the tools available to you.
 You always check if the goal is done. If done you send the report to the user.
 Today is {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
@@ -24,14 +24,42 @@ Today is {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 MAX_ITERATIONS = 5
 
 def needs_search(goal: str) -> bool:
+    goal_lower = goal.lower()
+
+    SEARCH_KEYWORDS = [
+        "latest", "today", "current", "recent",
+        "this week", "this month", "this year", "news",
+        "price", "prices", "cost", "ticket",
+        "timing", "opening hours", "availability", "near",
+        "nearby", "where can i buy", "restaurant", "hotel",
+        "flight", "weather", "stock",
+    ]
+
+    if any(keyword in goal_lower for keyword in SEARCH_KEYWORDS):
+        print("\n Time-sensitive query detected - forcing web search")
+        return True
+
     decision = llm([
         {
             "role": "system",
-            "content": "You are a helpful assistant. Answer in YES or NO."
+            "content": f"""
+            You decide whether web search is required.
+
+            Respond ONLY with YES or NO.
+
+            Answer YES if:
+            - the answer could change over time
+            - current or live information is needed
+            - local businesses or locations are involved
+            - prices, timings, availability, or schedules are requested
+            - searching the web would significantly improve accuracy
+
+            Answer NO only if the answer is stable general knowledge.
+            """
         },
         {
             "role": "user",
-            "content": f"Do you need to search the web to answer this accurately?\n\nQuestion: {goal}"
+            "content": f"Does this question require web search to answer accurately?\n\nQuestion: {goal}"
         }
     ])
     return "YES" in decision.upper()
